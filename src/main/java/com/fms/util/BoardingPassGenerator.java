@@ -1,4 +1,4 @@
-package util;
+package com.fms.util;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;

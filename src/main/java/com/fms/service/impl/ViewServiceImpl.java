@@ -1,6 +1,6 @@
-package service.impl;
+package com.fms.service.impl;
 
-import util.DBConnection;
+import com.fms.util.DBConnection;
 import java.sql.*;
 import java.util.Scanner;
 

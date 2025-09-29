@@ -1,4 +1,4 @@
-package service;
+package com.fms.service;
 
 import java.util.Scanner;
 

@@ -1,7 +1,7 @@
-package service.impl;
+package com.fms.service.impl;
 
-import service.CancelService;
-import util.DBConnection;
+import com.fms.service.CancelService;
+import com.fms.util.DBConnection;
 import java.sql.*;
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package model;
+package com.fms.model;
 
 import java.sql.Timestamp;
 

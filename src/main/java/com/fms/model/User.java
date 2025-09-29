@@ -1,4 +1,4 @@
-package model;
+package com.fms.model;
 
 public class User {
     private int userId;

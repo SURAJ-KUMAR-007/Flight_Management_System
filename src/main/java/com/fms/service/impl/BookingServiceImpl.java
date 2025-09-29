@@ -1,8 +1,8 @@
-package service.impl;
+package com.fms.service.impl;
 
-import service.BookingService;
-import util.DBConnection;
-import util.BoardingPassGenerator;
+import com.fms.service.BookingService;
+import com.fms.util.DBConnection;
+import com.fms.util.BoardingPassGenerator;
 
 import java.sql.*;
 import java.util.Scanner;
