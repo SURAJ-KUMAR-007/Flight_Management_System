@@ -6,8 +6,6 @@ import com.fms.util.DBConnection;
 import java.sql.*;
 import java.util.Scanner;
 
-import java.sql.*;
-import java.util.Scanner;
 import org.mindrot.jbcrypt.BCrypt;
 import javax.swing.*;
 
@@ -62,11 +60,17 @@ public class UserServiceImpl implements UserService {
             String username = promptUsernameUnique(conn);
             if (username == null) return;
 
+            String name = JOptionPane.showInputDialog(null, "Enter full name:");
+            if (name == null) return; // cancelled
+
+//            String email = JOptionPane.showInputDialog(null, "Enter email:");
+            String email = promptValidEmail();
+            if (email == null) return; // cancelled
+
+
+            userCancelledDialog = false;
             String password = "";
             boolean passwordValid = false;
-            String name = JOptionPane.showInputDialog(null, "Enter full name:");
-            String email = JOptionPane.showInputDialog(null, "Enter email:");
-
             while (!passwordValid) {
                 password = readPassword("Enter password (Min 8 chars, incl. special character) or CANCEL to exit:");
 
@@ -154,6 +158,28 @@ public class UserServiceImpl implements UserService {
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next();
             }
+        }
+    }
+
+
+    // 1) Add this validator (anywhere in the class)
+    private boolean isEmailValid(String email) {
+        if (email == null) return false;
+        email = email.trim();
+        // simple, readable pattern: local@domain.tld (tld >= 2 chars)
+        return email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+    }
+
+    // 2) Optional: prompt in a loop until valid (cancel returns null)
+    private String promptValidEmail() {
+        while (true) {
+            String e = JOptionPane.showInputDialog(null, "Enter email:");
+            if (e == null) return null; // user cancelled
+            e = e.trim();
+            if (isEmailValid(e)) return e;
+            JOptionPane.showMessageDialog(null,
+                    "Please enter a valid email address (must contain @ and a domain).",
+                    "Invalid Email", JOptionPane.ERROR_MESSAGE);
         }
     }
 
