@@ -1,0 +1,76 @@
+# name: Build & Deploy
+
+# on:
+#   push: 
+#       branches:
+#         -main
+#         -dev # can have mulitple branch
+# env:
+#   CI: false  #stops the lints or inline small coding style error,warnings if not stopped it will break the build
+#               #but in prod it should be true 
+  
+# jobs:  #what we have to run (means which jobs to run and how)
+#     build:
+#       name: Build
+#       runs-on: ubuntu-latest     #for running the build we use as ubuntu as server for build as mentioned
+
+#     steps:      #what steps should be followed in making build
+#       - name: Checkout repo
+#         uses: actions/checkout@v2   #this is the  inbuilt command for checkout given by actions
+        
+        
+name: Build & Deploy
+
+on:
+  push:
+    branches: [ "main", "dev" ]   # run on pushes to main and dev
+  pull_request:
+    branches: [ "main", "dev" ]   # also validate PRs into these branches
+  workflow_dispatch:              # allow manual runs from the Actions tab
+
+env:
+  CI: false  # stops lint-style failures; set to true in prod if you want strict CI
+
+jobs:  # what we have to run (means which jobs to run and how)
+  build:
+    name: Build (Maven + JDK 17)
+    runs-on: ubuntu-latest        # ubuntu runner for building
+
+    steps:  # what steps should be followed in making build
+      - name: Checkout repo
+        uses: actions/checkout@v4 # official action to checkout your code
+
+      - name: Set up Temurin JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin   # AdoptOpenJDK/Temurin distribution
+          java-version: '17'      # match your local JDK version
+          cache: maven            # built-in Maven cache for ~/.m2
+
+      # Optional: make sure Maven is available (helps with debugging path/JDK)
+      - name: Show Java and Maven versions
+        run: |
+          java -version
+          mvn -v
+
+      # Compile + package (fast dev build). Use `-DskipTests` to speed up CI on dev.
+      - name: Build with Maven
+        run: mvn -B -DskipTests package
+
+      # Run unit tests (kept separate so you can enable/disable easily)
+      - name: Run unit tests
+        if: ${{ always() }}       # still runs even if previous step failed? change to success() if you want strict
+        run: mvn -B test
+
+      # Upload the built JAR as a CI artifact so you can download it from the run
+      - name: Upload JAR artifact
+        if: ${{ success() }}      # only if build succeeded
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: target/*.jar      # e.g., target/demo-0.0.1-SNAPSHOT.jar
+
+      
+      
+    
+        
